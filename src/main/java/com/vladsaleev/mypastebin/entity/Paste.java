@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "paste")
 public class Paste {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
