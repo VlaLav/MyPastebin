@@ -21,6 +21,9 @@ public class Paste {
     private String text;
     @Column(nullable = false)
     private String status;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdTime;
     private LocalDateTime expiredTime;
+    @Column(nullable = false, updatable = false)
     private String hash;
 }
