@@ -45,7 +45,6 @@ public class PasteServiceImpl implements PasteService{
 
     @Override
     public List<Paste> getLastPublicPaste() {
-//        pasteRepository.findLastPublicPaste();
-        return null;
+        return pasteRepository.findLastPublicPaste();
     }
 }
