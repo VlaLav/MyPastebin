@@ -17,13 +17,18 @@ public class Paste {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private int id;
+
     @Column(nullable = false)
     private String text;
+
     @Column(nullable = false)
     private String status;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdTime;
+
     private LocalDateTime expiredTime;
+
     @Column(nullable = false, updatable = false)
     private String hash;
 }
