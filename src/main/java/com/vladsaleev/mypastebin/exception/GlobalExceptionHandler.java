@@ -12,4 +12,10 @@ public class GlobalExceptionHandler {
     public String handleUserNotFoundException(PasteNotFoundException ex) {
         return ex.getMessage();
     }
+
+    @ExceptionHandler(PasteHasExpiredException.class)
+    @ResponseBody
+    public String handlePasteHasExpiredException(PasteHasExpiredException ex) {
+        return ex.getMessage();
+    }
 }

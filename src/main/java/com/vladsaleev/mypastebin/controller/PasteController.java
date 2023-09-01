@@ -1,6 +1,7 @@
 package com.vladsaleev.mypastebin.controller;
 
 import com.vladsaleev.mypastebin.entity.Paste;
+import com.vladsaleev.mypastebin.exception.PasteHasExpiredException;
 import com.vladsaleev.mypastebin.service.PasteServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ public class PasteController {
     private PasteServiceImpl pasteService;
 
     @GetMapping("/{hash}")
-    public ResponseEntity<String> getPasteText(@PathVariable String hash){
+    public ResponseEntity<String> getPasteText(@PathVariable String hash) throws PasteHasExpiredException {
         return new ResponseEntity<>(pasteService.getPasteTextByHash(hash), HttpStatus.OK);
     }
 

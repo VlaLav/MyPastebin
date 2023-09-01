@@ -2,6 +2,7 @@ package com.vladsaleev.mypastebin.service;
 
 
 import com.vladsaleev.mypastebin.entity.Paste;
+import com.vladsaleev.mypastebin.exception.PasteHasExpiredException;
 import com.vladsaleev.mypastebin.exception.PasteNotFoundException;
 import com.vladsaleev.mypastebin.repo.PasteRepository;
 import lombok.AllArgsConstructor;
@@ -32,9 +33,13 @@ public class PasteServiceImpl implements PasteService{
     }
 
     @Override
-    public String getPasteTextByHash(String hash) {
+    public String getPasteTextByHash(String hash) throws PasteHasExpiredException {
         Paste paste = pasteRepository.findByHash(hash)
                 .orElseThrow(()-> new PasteNotFoundException("Paste by hash " + hash + " was not found"));
+        if (paste.getExpiredTime() != 0 &&
+                paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now())){
+            throw new PasteHasExpiredException("Paste by hash " + hash + " has expired");
+        }
         return paste.getText();
     }
 

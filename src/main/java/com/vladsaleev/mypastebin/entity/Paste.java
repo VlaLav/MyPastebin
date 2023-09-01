@@ -27,7 +27,7 @@ public class Paste {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdTime;
 
-    private LocalDateTime expiredTime;
+    private long expiredTime;
 
     @Column(nullable = false, updatable = false)
     private String hash;
