@@ -16,7 +16,7 @@ public class PasteController {
 
     @GetMapping("/{hash}")
     public ResponseEntity<String> getPasteText(@PathVariable String hash){
-        return new ResponseEntity<String>(pasteService.getPasteTextByHash(hash), HttpStatus.OK);
+        return new ResponseEntity<>(pasteService.getPasteTextByHash(hash), HttpStatus.OK);
     }
 
     @PostMapping
