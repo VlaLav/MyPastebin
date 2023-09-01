@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class PasteController {
@@ -23,6 +25,11 @@ public class PasteController {
     @PostMapping
     public ResponseEntity<String> createPaste(@RequestBody Paste paste){
         return new ResponseEntity<>(pasteService.savePaste(paste), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Paste>> getTenLastPublicPaste(){
+        return new ResponseEntity<>(pasteService.getLastPublicPaste(), HttpStatus.OK);
     }
 
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -45,7 +46,12 @@ public class PasteServiceImpl implements PasteService{
 
     @Override
     public List<Paste> getLastPublicPaste() {
-//        pasteRepository.findLastPublicPaste();
-        return null;
+        List<Paste> pasteList = pasteRepository.findLastPublicPaste();
+
+        return pasteList.stream()
+                .filter(paste -> paste.getExpiredTime() == 0 ||
+                        !paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now()))
+                .limit(10)
+                .collect(Collectors.toList());
     }
 }
