@@ -1,7 +1,7 @@
 package com.vladsaleev.mypastebin.controller;
 
-import com.vladsaleev.mypastebin.entity.Paste;
 import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
+import com.vladsaleev.mypastebin.entity.response.PasteResponse;
 import com.vladsaleev.mypastebin.entity.response.PasteUrlResponse;
 import com.vladsaleev.mypastebin.service.PasteServiceImpl;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class PasteController {
     private PasteServiceImpl pasteService;
 
     @GetMapping("/{hash}")
-    public ResponseEntity<String> getPasteText(@PathVariable String hash) {
+    public ResponseEntity<PasteResponse> getPasteText(@PathVariable String hash) {
         return new ResponseEntity<>(pasteService.getPasteTextByHash(hash), HttpStatus.OK);
     }
 
@@ -28,7 +28,7 @@ public class PasteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Paste>> getTenLastPublicPaste(){
+    public ResponseEntity<List<PasteResponse>> getTenLastPublicPaste(){
         return new ResponseEntity<>(pasteService.getLastPublicPaste(), HttpStatus.OK);
     }
 }
