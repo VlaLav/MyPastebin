@@ -3,6 +3,7 @@ package com.vladsaleev.mypastebin.service;
 
 import com.vladsaleev.mypastebin.entity.Paste;
 import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
+import com.vladsaleev.mypastebin.entity.response.PasteUrlResponse;
 import com.vladsaleev.mypastebin.exception.PasteNotFoundException;
 import com.vladsaleev.mypastebin.repo.PasteRepository;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class PasteServiceImpl implements PasteService{
     private PasteRepository pasteRepository;
 
     @Override
-    public String savePaste(PasteCreateRequest pasteCreateRequest) {
+    public PasteUrlResponse savePaste(PasteCreateRequest pasteCreateRequest) {
         Paste paste = new Paste();
 
         paste.setText(pasteCreateRequest.getText());
@@ -30,8 +31,7 @@ public class PasteServiceImpl implements PasteService{
         paste.setHash(Integer.toHexString(Objects.hashCode(paste)));
 
         Paste paste1 = pasteRepository.save(paste);
-        System.out.println(paste1);
-        return paste1.getHash();
+        return new PasteUrlResponse("https://mypastebin.com/" + paste1.getHash());
     }
 
     @Override
