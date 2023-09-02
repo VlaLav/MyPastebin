@@ -2,7 +2,6 @@ package com.vladsaleev.mypastebin.service;
 
 
 import com.vladsaleev.mypastebin.entity.Paste;
-import com.vladsaleev.mypastebin.exception.PasteHasExpiredException;
 import com.vladsaleev.mypastebin.exception.PasteNotFoundException;
 import com.vladsaleev.mypastebin.repo.PasteRepository;
 import lombok.AllArgsConstructor;
@@ -22,24 +21,20 @@ public class PasteServiceImpl implements PasteService{
     @Override
     public String savePaste(Paste paste) {
         paste.setCreatedTime(LocalDateTime.now());
-        paste.setHash(String.valueOf(Objects.hashCode(paste)));
-
-        System.out.println(paste.getHash());
+        paste.setHash(Integer.toHexString(Objects.hashCode(paste)));
 
         Paste paste1 = pasteRepository.save(paste);
-
-        System.out.println(paste1);
-
         return paste1.getHash();
     }
 
     @Override
-    public String getPasteTextByHash(String hash) throws PasteHasExpiredException {
-        Paste paste = pasteRepository.findByHash(hash)
-                .orElseThrow(()-> new PasteNotFoundException("Paste by hash " + hash + " was not found"));
+    public String getPasteTextByHash(String hash) {
+        String error = "This page is no longer available. It has either expired, " +
+                "been removed by its creator, or removed by one of the Pastebin staff.";
+        Paste paste = pasteRepository.findByHash(hash).orElseThrow(()-> new PasteNotFoundException(error));
         if (paste.getExpiredTime() != 0 &&
                 paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now())){
-            throw new PasteHasExpiredException("Paste by hash " + hash + " has expired");
+            throw new PasteNotFoundException(error);
         }
         return paste.getText();
     }

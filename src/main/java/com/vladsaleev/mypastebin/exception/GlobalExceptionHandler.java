@@ -1,6 +1,8 @@
 package com.vladsaleev.mypastebin.exception;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -9,13 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
     @ExceptionHandler(PasteNotFoundException.class)
     @ResponseBody
-    public String handleUserNotFoundException(PasteNotFoundException ex) {
-        return ex.getMessage();
-    }
-
-    @ExceptionHandler(PasteHasExpiredException.class)
-    @ResponseBody
-    public String handlePasteHasExpiredException(PasteHasExpiredException ex) {
-        return ex.getMessage();
+    public ResponseEntity<String> handlePasteNotFoundException(PasteNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
