@@ -22,7 +22,7 @@ public class Paste {
     private String text;
 
     @Column(nullable = false)
-    private String status;
+    private PublicStatus status;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdTime;

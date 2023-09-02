@@ -1,6 +1,7 @@
 package com.vladsaleev.mypastebin.controller;
 
 import com.vladsaleev.mypastebin.entity.Paste;
+import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
 import com.vladsaleev.mypastebin.service.PasteServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class PasteController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPaste(@RequestBody Paste paste){
+    public ResponseEntity<String> createPaste(@RequestBody PasteCreateRequest paste){
         return new ResponseEntity<>(pasteService.savePaste(paste), HttpStatus.CREATED);
     }
 
@@ -29,6 +30,4 @@ public class PasteController {
     public ResponseEntity<List<Paste>> getTenLastPublicPaste(){
         return new ResponseEntity<>(pasteService.getLastPublicPaste(), HttpStatus.OK);
     }
-
-
 }

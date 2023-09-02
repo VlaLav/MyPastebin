@@ -2,6 +2,7 @@ package com.vladsaleev.mypastebin.service;
 
 
 import com.vladsaleev.mypastebin.entity.Paste;
+import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
 import com.vladsaleev.mypastebin.exception.PasteNotFoundException;
 import com.vladsaleev.mypastebin.repo.PasteRepository;
 import lombok.AllArgsConstructor;
@@ -19,11 +20,17 @@ public class PasteServiceImpl implements PasteService{
     private PasteRepository pasteRepository;
 
     @Override
-    public String savePaste(Paste paste) {
+    public String savePaste(PasteCreateRequest pasteCreateRequest) {
+        Paste paste = new Paste();
+
+        paste.setText(pasteCreateRequest.getText());
+        paste.setStatus(pasteCreateRequest.getStatus());
+        paste.setExpiredTime(pasteCreateRequest.getExpiredTime());
         paste.setCreatedTime(LocalDateTime.now());
         paste.setHash(Integer.toHexString(Objects.hashCode(paste)));
 
         Paste paste1 = pasteRepository.save(paste);
+        System.out.println(paste1);
         return paste1.getHash();
     }
 
@@ -42,6 +49,7 @@ public class PasteServiceImpl implements PasteService{
     @Override
     public List<Paste> getLastPublicPaste() {
         List<Paste> pasteList = pasteRepository.findLastPublicPaste();
+        System.out.println(pasteList);
 
         return pasteList.stream()
                 .filter(paste -> paste.getExpiredTime() == 0 ||
