@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface PasteRepository extends JpaRepository <Paste, Integer> {
     Optional<Paste> findByHash(String hash);
-    @Query(value = "SELECT p FROM Paste p WHERE p.status = 'public' ORDER BY p.createdTime DESC")
+    @Query(value = "SELECT p FROM Paste p WHERE p.status = PUBLIC ORDER BY p.createdTime DESC")
     List<Paste> findLastPublicPaste();
 
 }

@@ -1,18 +1,15 @@
 package com.vladsaleev.mypastebin.service;
 
-import com.vladsaleev.mypastebin.entity.Paste;
-import com.vladsaleev.mypastebin.exception.PasteHasExpiredException;
-import com.vladsaleev.mypastebin.repo.PasteRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Service;
+import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
+import com.vladsaleev.mypastebin.entity.response.PasteResponse;
+import com.vladsaleev.mypastebin.entity.response.PasteUrlResponse;
 
 import java.util.List;
 
 
 public interface PasteService {
-    public String savePaste(Paste paste);
-    public String getPasteTextByHash(String hash) throws PasteHasExpiredException;
+    PasteUrlResponse savePaste(PasteCreateRequest pasteCreateRequest);
+    PasteResponse getPasteTextByHash(String hash);
 
-    public List<Paste> getLastPublicPaste();
+    List<PasteResponse> getLastPublicPaste();
 }
