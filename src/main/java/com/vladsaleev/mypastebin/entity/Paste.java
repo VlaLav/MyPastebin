@@ -31,4 +31,8 @@ public class Paste {
 
     @Column(nullable = false, updatable = false)
     private String hash;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(updatable = false)
+    private User user;
 }
