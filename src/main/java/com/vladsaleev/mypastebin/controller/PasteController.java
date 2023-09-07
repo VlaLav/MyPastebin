@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1/paste")
 public class PasteController {
 
     private PasteServiceImpl pasteService;
