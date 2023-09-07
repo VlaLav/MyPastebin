@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -22,8 +23,9 @@ public class PasteController {
         return new ResponseEntity<>(pasteService.getPasteTextByHash(hash), HttpStatus.OK);
     }
 
+    //TODO principal
     @PostMapping
-    public ResponseEntity<PasteUrlResponse> createPaste(@RequestBody PasteCreateRequest paste){
+    public ResponseEntity<PasteUrlResponse> createPaste(@RequestBody PasteCreateRequest paste, Principal principal){
         return new ResponseEntity<>(pasteService.savePaste(paste), HttpStatus.CREATED);
     }
 
@@ -31,4 +33,15 @@ public class PasteController {
     public ResponseEntity<List<PasteResponse>> getTenLastPublicPaste(){
         return new ResponseEntity<>(pasteService.getLastPublicPaste(), HttpStatus.OK);
     }
+
+    @PutMapping("/edit/{hash}")
+    public ResponseEntity<PasteResponse> updatePaste(@PathVariable String hash,
+                                                     @RequestBody PasteCreateRequest pasteCreateRequest,
+                                                     Principal principal){
+        return new ResponseEntity<>(pasteService.updatePaste(hash, pasteCreateRequest, principal), HttpStatus.OK);
+    }
+
+    //если пользователь не аутентифицирован то перенаправлять с /edit в контроллер аутентификации
+    //если пользователь аутентифицирован и авторизован то дать доступ к редактированию
+    //если пользователь аутентифицирован и не авторизован то выдать ошибку доступа
 }

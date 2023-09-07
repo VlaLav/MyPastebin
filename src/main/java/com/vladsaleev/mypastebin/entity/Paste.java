@@ -24,7 +24,7 @@ public class Paste {
     @Column(nullable = false)
     private PublicStatus status;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private LocalDateTime createdTime;
 
     private long expiredTime;
@@ -33,6 +33,5 @@ public class Paste {
     private String hash;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(updatable = false)
     private User user;
 }

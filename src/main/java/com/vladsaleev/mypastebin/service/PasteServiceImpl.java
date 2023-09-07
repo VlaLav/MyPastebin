@@ -10,6 +10,7 @@ import com.vladsaleev.mypastebin.repo.PasteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -58,5 +59,19 @@ public class PasteServiceImpl implements PasteService{
                 .map(paste -> new PasteResponse(paste.getText(), paste.getStatus(), paste.getCreatedTime()))
                 .limit(10)
                 .collect(Collectors.toList());
+    }
+
+    public PasteResponse updatePaste(String hash, PasteCreateRequest pasteCreateRequest, Principal principal) {
+        String error = "This page is no longer available. It has either expired, " +
+                "been removed by its creator, or removed by one of the Pastebin staff.";
+        Paste paste = pasteRepository.findByHash(hash).orElseThrow();
+
+        paste.setText(pasteCreateRequest.getText());
+        paste.setStatus(pasteCreateRequest.getStatus());
+        paste.setExpiredTime(pasteCreateRequest.getExpiredTime());
+
+        Paste paste1 = pasteRepository.save(paste);
+
+        return new PasteResponse(paste1.getText(), paste1.getStatus(), paste1.getCreatedTime());
     }
 }
