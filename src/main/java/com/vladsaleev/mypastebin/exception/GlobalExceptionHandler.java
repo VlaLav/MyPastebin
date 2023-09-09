@@ -14,4 +14,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlePasteNotFoundException(PasteNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(PasteEditException.class)
+    @ResponseBody
+    public ResponseEntity<String> handlePasteNotFoundException(PasteEditException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

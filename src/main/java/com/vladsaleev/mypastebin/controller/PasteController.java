@@ -9,10 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1/paste")
 public class PasteController {
 
     private PasteServiceImpl pasteService;
@@ -22,13 +24,23 @@ public class PasteController {
         return new ResponseEntity<>(pasteService.getPasteTextByHash(hash), HttpStatus.OK);
     }
 
+    //TODO principal
     @PostMapping
-    public ResponseEntity<PasteUrlResponse> createPaste(@RequestBody PasteCreateRequest paste){
-        return new ResponseEntity<>(pasteService.savePaste(paste), HttpStatus.CREATED);
+    public ResponseEntity<PasteUrlResponse> createPaste(@RequestBody PasteCreateRequest paste,
+                                                        Principal principal){
+        return new ResponseEntity<>(pasteService.savePaste(paste, principal), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<PasteResponse>> getTenLastPublicPaste(){
         return new ResponseEntity<>(pasteService.getLastPublicPaste(), HttpStatus.OK);
     }
+
+    @PutMapping("/edit/{hash}")
+    public ResponseEntity<PasteResponse> updatePaste(@PathVariable String hash,
+                                                     @RequestBody PasteCreateRequest pasteCreateRequest,
+                                                     Principal principal){
+        return new ResponseEntity<>(pasteService.updatePaste(hash, pasteCreateRequest, principal), HttpStatus.OK);
+    }
+
 }

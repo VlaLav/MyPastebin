@@ -24,11 +24,14 @@ public class Paste {
     @Column(nullable = false)
     private PublicStatus status;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private LocalDateTime createdTime;
 
     private long expiredTime;
 
     @Column(nullable = false, updatable = false)
     private String hash;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 }
