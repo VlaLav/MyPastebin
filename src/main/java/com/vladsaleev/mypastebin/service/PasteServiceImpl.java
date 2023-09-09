@@ -7,7 +7,9 @@ import com.vladsaleev.mypastebin.entity.response.PasteResponse;
 import com.vladsaleev.mypastebin.entity.response.PasteUrlResponse;
 import com.vladsaleev.mypastebin.exception.PasteNotFoundException;
 import com.vladsaleev.mypastebin.repo.PasteRepository;
+import com.vladsaleev.mypastebin.repo.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -20,10 +22,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PasteServiceImpl implements PasteService{
 
-    private PasteRepository pasteRepository;
+    private final PasteRepository pasteRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public PasteUrlResponse savePaste(PasteCreateRequest pasteCreateRequest) {
+    public PasteUrlResponse savePaste(PasteCreateRequest pasteCreateRequest, Principal principal) {
         Paste paste = new Paste();
 
         paste.setText(pasteCreateRequest.getText());
@@ -31,6 +34,11 @@ public class PasteServiceImpl implements PasteService{
         paste.setExpiredTime(pasteCreateRequest.getExpiredTime());
         paste.setCreatedTime(LocalDateTime.now());
         paste.setHash(Integer.toHexString(Objects.hashCode(paste)));
+
+        if (principal != null){
+            paste.setUser(userRepository.findByEmail(principal.getName())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found")));
+        }
 
         Paste paste1 = pasteRepository.save(paste);
         return new PasteUrlResponse("https://mypastebin.com/" + paste1.getHash());

@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public interface PasteService {
-    PasteUrlResponse savePaste(PasteCreateRequest pasteCreateRequest);
+    PasteUrlResponse savePaste(PasteCreateRequest pasteCreateRequest, Principal principal);
     PasteResponse getPasteTextByHash(String hash);
     List<PasteResponse> getLastPublicPaste();
     PasteResponse updatePaste(String hash, PasteCreateRequest pasteCreateRequest, Principal principal);

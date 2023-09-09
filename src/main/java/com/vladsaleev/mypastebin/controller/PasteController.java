@@ -26,8 +26,9 @@ public class PasteController {
 
     //TODO principal
     @PostMapping
-    public ResponseEntity<PasteUrlResponse> createPaste(@RequestBody PasteCreateRequest paste, Principal principal){
-        return new ResponseEntity<>(pasteService.savePaste(paste), HttpStatus.CREATED);
+    public ResponseEntity<PasteUrlResponse> createPaste(@RequestBody PasteCreateRequest paste,
+                                                        Principal principal){
+        return new ResponseEntity<>(pasteService.savePaste(paste, principal), HttpStatus.CREATED);
     }
 
     @GetMapping
