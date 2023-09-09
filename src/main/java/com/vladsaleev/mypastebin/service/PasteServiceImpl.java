@@ -2,9 +2,11 @@ package com.vladsaleev.mypastebin.service;
 
 
 import com.vladsaleev.mypastebin.entity.Paste;
+import com.vladsaleev.mypastebin.entity.User;
 import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
 import com.vladsaleev.mypastebin.entity.response.PasteResponse;
 import com.vladsaleev.mypastebin.entity.response.PasteUrlResponse;
+import com.vladsaleev.mypastebin.exception.PasteEditException;
 import com.vladsaleev.mypastebin.exception.PasteNotFoundException;
 import com.vladsaleev.mypastebin.repo.PasteRepository;
 import com.vladsaleev.mypastebin.repo.UserRepository;
@@ -70,9 +72,12 @@ public class PasteServiceImpl implements PasteService{
     }
 
     public PasteResponse updatePaste(String hash, PasteCreateRequest pasteCreateRequest, Principal principal) {
-        String error = "This page is no longer available. It has either expired, " +
-                "been removed by its creator, or removed by one of the Pastebin staff.";
-        Paste paste = pasteRepository.findByHash(hash).orElseThrow();
+
+        User user = userRepository.findByEmail(principal.getName())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Paste paste = pasteRepository.findPasteByHashAndUser(hash, user)
+                .orElseThrow(() -> new PasteEditException("Error, you cannot edit this paste that does not belong to you"));
 
         paste.setText(pasteCreateRequest.getText());
         paste.setStatus(pasteCreateRequest.getStatus());

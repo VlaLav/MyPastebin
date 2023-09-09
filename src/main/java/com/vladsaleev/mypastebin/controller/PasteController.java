@@ -43,7 +43,4 @@ public class PasteController {
         return new ResponseEntity<>(pasteService.updatePaste(hash, pasteCreateRequest, principal), HttpStatus.OK);
     }
 
-    //если пользователь не аутентифицирован то перенаправлять с /edit в контроллер аутентификации
-    //если пользователь аутентифицирован и авторизован то дать доступ к редактированию
-    //если пользователь аутентифицирован и не авторизован то выдать ошибку доступа
 }
