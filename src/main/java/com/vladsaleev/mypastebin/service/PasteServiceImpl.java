@@ -55,7 +55,10 @@ public class PasteServiceImpl implements PasteService{
                 paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now())){
             throw new PasteNotFoundException(error);
         }
-        return new PasteResponse(paste.getText(), paste.getStatus(), paste.getCreatedTime());
+        return new PasteResponse(paste.getText(),
+                "https://mypastebin.com/" + paste.getHash(),
+                paste.getStatus(),
+                paste.getCreatedTime());
     }
 
     @Override
@@ -66,7 +69,11 @@ public class PasteServiceImpl implements PasteService{
         return pasteList.stream()
                 .filter(paste -> paste.getExpiredTime() == 0 ||
                         !paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now()))
-                .map(paste -> new PasteResponse(paste.getText(), paste.getStatus(), paste.getCreatedTime()))
+                .map(paste -> new PasteResponse(
+                        paste.getText(),
+                        "https://mypastebin.com/" + paste.getHash(),
+                        paste.getStatus(),
+                        paste.getCreatedTime()))
                 .limit(10)
                 .collect(Collectors.toList());
     }
@@ -85,6 +92,9 @@ public class PasteServiceImpl implements PasteService{
 
         Paste paste1 = pasteRepository.save(paste);
 
-        return new PasteResponse(paste1.getText(), paste1.getStatus(), paste1.getCreatedTime());
+        return new PasteResponse(paste1.getText(),
+                "https://mypastebin.com/" + paste1.getHash(),
+                paste1.getStatus(),
+                paste1.getCreatedTime());
     }
 }

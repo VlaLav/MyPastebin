@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PasteResponse {
     private String text;
+    private String url;
     private PublicStatus status;
     private LocalDateTime createdTime;
 }
