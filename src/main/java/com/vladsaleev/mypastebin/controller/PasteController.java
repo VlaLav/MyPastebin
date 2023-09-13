@@ -1,6 +1,7 @@
 package com.vladsaleev.mypastebin.controller;
 
 import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
+import com.vladsaleev.mypastebin.entity.response.PasteMessageResponse;
 import com.vladsaleev.mypastebin.entity.response.PasteResponse;
 import com.vladsaleev.mypastebin.entity.response.PasteUrlResponse;
 import com.vladsaleev.mypastebin.service.PasteServiceImpl;
@@ -24,11 +25,10 @@ public class PasteController {
         return new ResponseEntity<>(pasteService.getPasteTextByHash(hash), HttpStatus.OK);
     }
 
-    //TODO principal
     @PostMapping
     public ResponseEntity<PasteUrlResponse> createPaste(@RequestBody PasteCreateRequest paste,
                                                         Principal principal){
-        return new ResponseEntity<>(pasteService.savePaste(paste, principal), HttpStatus.CREATED);
+        return new ResponseEntity<>(pasteService.createPaste(paste, principal), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -36,11 +36,17 @@ public class PasteController {
         return new ResponseEntity<>(pasteService.getLastPublicPaste(), HttpStatus.OK);
     }
 
-    @PutMapping("/edit/{hash}")
+    @PutMapping("/{hash}")
     public ResponseEntity<PasteResponse> updatePaste(@PathVariable String hash,
                                                      @RequestBody PasteCreateRequest pasteCreateRequest,
                                                      Principal principal){
         return new ResponseEntity<>(pasteService.updatePaste(hash, pasteCreateRequest, principal), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{hash}")
+    public ResponseEntity<PasteMessageResponse> deletePaste(@PathVariable String hash,
+                                                            Principal principal){
+        return new ResponseEntity<>(pasteService.deletePaste(hash, principal), HttpStatus.OK);
     }
 
 }
