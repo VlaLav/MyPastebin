@@ -3,6 +3,7 @@ package com.vladsaleev.mypastebin.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,14 +26,15 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .requestMatchers("/api/v1/paste/edit/{hash}").authenticated()
-                .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/paste/**").permitAll()
-
-                .anyRequest().authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/paste/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/paste/**").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/api/v1/paste/**").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/api/v1/paste/**").authenticated()
+                    .requestMatchers("/api/v1/auth/**").permitAll()
+                    .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

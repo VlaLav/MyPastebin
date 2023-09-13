@@ -1,6 +1,7 @@
 package com.vladsaleev.mypastebin.exception;
 
 
+import com.vladsaleev.mypastebin.entity.response.PasteErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,13 +12,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
     @ExceptionHandler(PasteNotFoundException.class)
     @ResponseBody
-    public ResponseEntity<String> handlePasteNotFoundException(PasteNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<PasteErrorResponse> handlePasteNotFoundException(PasteNotFoundException ex) {
+        return new ResponseEntity<>(new PasteErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PasteEditException.class)
     @ResponseBody
-    public ResponseEntity<String> handlePasteNotFoundException(PasteEditException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<PasteErrorResponse> handlePasteNotFoundException(PasteEditException ex) {
+        return new ResponseEntity<>(new PasteErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

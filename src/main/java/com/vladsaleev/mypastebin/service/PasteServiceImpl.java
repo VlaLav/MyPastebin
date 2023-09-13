@@ -4,6 +4,7 @@ package com.vladsaleev.mypastebin.service;
 import com.vladsaleev.mypastebin.entity.Paste;
 import com.vladsaleev.mypastebin.entity.User;
 import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
+import com.vladsaleev.mypastebin.entity.response.PasteMessageResponse;
 import com.vladsaleev.mypastebin.entity.response.PasteResponse;
 import com.vladsaleev.mypastebin.entity.response.PasteUrlResponse;
 import com.vladsaleev.mypastebin.exception.PasteEditException;
@@ -28,7 +29,7 @@ public class PasteServiceImpl implements PasteService{
     private final UserRepository userRepository;
 
     @Override
-    public PasteUrlResponse savePaste(PasteCreateRequest pasteCreateRequest, Principal principal) {
+    public PasteUrlResponse createPaste(PasteCreateRequest pasteCreateRequest, Principal principal) {
         Paste paste = new Paste();
 
         paste.setText(pasteCreateRequest.getText());
@@ -42,8 +43,8 @@ public class PasteServiceImpl implements PasteService{
                     .orElseThrow(() -> new UsernameNotFoundException("User not found")));
         }
 
-        Paste paste1 = pasteRepository.save(paste);
-        return new PasteUrlResponse("https://mypastebin.com/" + paste1.getHash());
+        Paste createdPaste = pasteRepository.save(paste);
+        return new PasteUrlResponse("https://mypastebin.com/" + createdPaste.getHash());
     }
 
     @Override
@@ -55,7 +56,10 @@ public class PasteServiceImpl implements PasteService{
                 paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now())){
             throw new PasteNotFoundException(error);
         }
-        return new PasteResponse(paste.getText(), paste.getStatus(), paste.getCreatedTime());
+        return new PasteResponse(paste.getText(),
+                "https://mypastebin.com/" + paste.getHash(),
+                paste.getStatus(),
+                paste.getCreatedTime());
     }
 
     @Override
@@ -66,7 +70,11 @@ public class PasteServiceImpl implements PasteService{
         return pasteList.stream()
                 .filter(paste -> paste.getExpiredTime() == 0 ||
                         !paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now()))
-                .map(paste -> new PasteResponse(paste.getText(), paste.getStatus(), paste.getCreatedTime()))
+                .map(paste -> new PasteResponse(
+                        paste.getText(),
+                        "https://mypastebin.com/" + paste.getHash(),
+                        paste.getStatus(),
+                        paste.getCreatedTime()))
                 .limit(10)
                 .collect(Collectors.toList());
     }
@@ -74,7 +82,7 @@ public class PasteServiceImpl implements PasteService{
     public PasteResponse updatePaste(String hash, PasteCreateRequest pasteCreateRequest, Principal principal) {
 
         User user = userRepository.findByEmail(principal.getName())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Paste paste = pasteRepository.findPasteByHashAndUser(hash, user)
                 .orElseThrow(() -> new PasteEditException("Error, you cannot edit this paste that does not belong to you"));
@@ -83,8 +91,23 @@ public class PasteServiceImpl implements PasteService{
         paste.setStatus(pasteCreateRequest.getStatus());
         paste.setExpiredTime(pasteCreateRequest.getExpiredTime());
 
-        Paste paste1 = pasteRepository.save(paste);
+        Paste updatedPaste = pasteRepository.save(paste);
 
-        return new PasteResponse(paste1.getText(), paste1.getStatus(), paste1.getCreatedTime());
+        return new PasteResponse(updatedPaste.getText(),
+                "https://mypastebin.com/" + updatedPaste.getHash(),
+                updatedPaste.getStatus(),
+                updatedPaste.getCreatedTime());
+    }
+
+    @Override
+    public PasteMessageResponse deletePaste(String hash, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Paste paste = pasteRepository.findPasteByHashAndUser(hash, user)
+                .orElseThrow(() -> new PasteEditException("Error, you cannot delete this paste that does not belong to you"));
+
+        pasteRepository.delete(paste);
+
+        return new PasteMessageResponse("Paste with HASH " + hash + " has been deleted");
     }
 }
