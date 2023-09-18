@@ -3,6 +3,7 @@ package com.vladsaleev.mypastebin.auth;
 import com.vladsaleev.mypastebin.config.JwtService;
 import com.vladsaleev.mypastebin.entity.Role;
 import com.vladsaleev.mypastebin.entity.User;
+import com.vladsaleev.mypastebin.exception.UserAlreadyExistException;
 import com.vladsaleev.mypastebin.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +18,14 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(RegisterRequest request) throws UserAlreadyExistException {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new UserAlreadyExistException("A user with this email already exists.");
+        }
+        if (userRepository.findUserByUsername(request.getUsername()).isPresent()){
+            throw new UserAlreadyExistException("A user with this username already exists.");
+        }
+
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
