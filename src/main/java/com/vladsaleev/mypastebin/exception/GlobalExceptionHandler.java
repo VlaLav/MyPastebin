@@ -2,6 +2,7 @@ package com.vladsaleev.mypastebin.exception;
 
 
 import com.vladsaleev.mypastebin.entity.response.PasteMessageResponse;
+import org.hibernate.PropertyValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,5 +27,11 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResponseEntity<PasteMessageResponse> handleUserAlreadyExistException(UserAlreadyExistException ex) {
         return new ResponseEntity<>(new PasteMessageResponse(ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(PropertyValueException.class)
+    @ResponseBody
+    public ResponseEntity<PasteMessageResponse> handlePropertyValueException(PropertyValueException ex) {
+        return new ResponseEntity<>(new PasteMessageResponse("Some required fields are missing or empty."), HttpStatus.BAD_REQUEST);
     }
 }

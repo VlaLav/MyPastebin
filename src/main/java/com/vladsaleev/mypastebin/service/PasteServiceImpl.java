@@ -80,7 +80,6 @@ public class PasteServiceImpl implements PasteService{
     }
 
     public PasteResponse updatePaste(String hash, PasteCreateRequest pasteCreateRequest, Principal principal) {
-
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
