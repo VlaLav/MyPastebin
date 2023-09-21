@@ -53,13 +53,24 @@ public class PasteServiceImpl implements PasteService{
     }
 
     @Override
-    public PasteResponse getPasteTextByHash(String hash) {
+    public PasteResponse getPasteTextByHash(String hash, Principal principal) {
+        User user = null;
+        if (principal != null){
+            user = userRepository.findByEmail(principal.getName())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        }
+
         String error = "This page is no longer available. It has either expired, " +
                 "been removed by its creator, or removed by one of the Pastebin staff.";
+        String privateError = "Error, this is a private paste or is pending moderation. " +
+                "If this paste belongs to you, please login to Pastebin to view it.";
         Paste paste = pasteRepository.findByHash(hash).orElseThrow(()-> new PasteNotFoundException(error));
         if (paste.getExpiredTime() != 0 &&
                 paste.getCreatedTime().plusSeconds(paste.getExpiredTime()).isBefore(LocalDateTime.now())){
             throw new PasteNotFoundException(error);
+        }
+        if (paste.getStatus() == PublicStatus.PRIVATE && pasteRepository.findPasteByHashAndUser(hash, user).isEmpty()){
+            throw new PasteNotFoundException(privateError);
         }
         return new PasteResponse(paste.getText(),
                 "https://mypastebin.com/" + paste.getHash(),

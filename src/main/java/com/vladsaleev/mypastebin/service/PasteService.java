@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface PasteService {
     PasteUrlResponse createPaste(PasteCreateRequest pasteCreateRequest, Principal principal);
-    PasteResponse getPasteTextByHash(String hash);
+    PasteResponse getPasteTextByHash(String hash, Principal principal);
     List<PasteResponse> getLastPublicPaste();
     PasteResponse updatePaste(String hash, PasteCreateRequest pasteCreateRequest, Principal principal);
     PasteMessageResponse deletePaste(String hash, Principal principal);
