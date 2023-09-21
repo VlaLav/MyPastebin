@@ -2,6 +2,7 @@ package com.vladsaleev.mypastebin.service;
 
 
 import com.vladsaleev.mypastebin.entity.Paste;
+import com.vladsaleev.mypastebin.entity.PublicStatus;
 import com.vladsaleev.mypastebin.entity.User;
 import com.vladsaleev.mypastebin.entity.request.PasteCreateRequest;
 import com.vladsaleev.mypastebin.entity.response.PasteMessageResponse;
@@ -30,6 +31,10 @@ public class PasteServiceImpl implements PasteService{
 
     @Override
     public PasteUrlResponse createPaste(PasteCreateRequest pasteCreateRequest, Principal principal) {
+        if (pasteCreateRequest.getStatus() == PublicStatus.PRIVATE && principal == null){
+            throw new PasteNotFoundException("Please login to Pastebin to create a private paste.");
+        }
+
         Paste paste = new Paste();
 
         paste.setText(pasteCreateRequest.getText());
