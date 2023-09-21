@@ -21,6 +21,7 @@ public class Paste {
     @Column(nullable = false)
     private String text;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PublicStatus status;
 

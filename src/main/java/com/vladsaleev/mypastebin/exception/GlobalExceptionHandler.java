@@ -1,7 +1,8 @@
 package com.vladsaleev.mypastebin.exception;
 
 
-import com.vladsaleev.mypastebin.entity.response.PasteErrorResponse;
+import com.vladsaleev.mypastebin.entity.response.PasteMessageResponse;
+import org.hibernate.PropertyValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,13 +13,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
     @ExceptionHandler(PasteNotFoundException.class)
     @ResponseBody
-    public ResponseEntity<PasteErrorResponse> handlePasteNotFoundException(PasteNotFoundException ex) {
-        return new ResponseEntity<>(new PasteErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<PasteMessageResponse> handlePasteNotFoundException(PasteNotFoundException ex) {
+        return new ResponseEntity<>(new PasteMessageResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PasteEditException.class)
     @ResponseBody
-    public ResponseEntity<PasteErrorResponse> handlePasteNotFoundException(PasteEditException ex) {
-        return new ResponseEntity<>(new PasteErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<PasteMessageResponse> handlePasteNotFoundException(PasteEditException ex) {
+        return new ResponseEntity<>(new PasteMessageResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserAlreadyExistException.class)
+    @ResponseBody
+    public ResponseEntity<PasteMessageResponse> handleUserAlreadyExistException(UserAlreadyExistException ex) {
+        return new ResponseEntity<>(new PasteMessageResponse(ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(PropertyValueException.class)
+    @ResponseBody
+    public ResponseEntity<PasteMessageResponse> handlePropertyValueException(PropertyValueException ex) {
+        return new ResponseEntity<>(new PasteMessageResponse("Some required fields are missing or empty."), HttpStatus.BAD_REQUEST);
     }
 }
